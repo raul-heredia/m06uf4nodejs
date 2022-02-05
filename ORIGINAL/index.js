@@ -36,8 +36,8 @@ function main() {
     }
 
     function casellaClicada(event) {
-        row = event.target.id[0];
-        column = event.target.id[1];
+        row = parseInt(event.target.id[0]);
+        column = parseInt(event.target.id[0]);
 
         if (row && column) {
             //MIRA SI HAY UNA FICHA PUESTA
