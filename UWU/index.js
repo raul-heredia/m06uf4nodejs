@@ -3,6 +3,7 @@ var gap = 3;
 var cellWidth = 80;
 var disclayer;
 var turn = 1;
+var score;
 
 var discs = [
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -16,6 +17,7 @@ var discs = [
 ]
 
 window.onload = () => {
+    scoreLabel = document.getElementById("score");
     blackBackground = document.getElementById("black");
     disclayer = document.getElementById("disclayer");
     blackBackground.style.width = cellWidth * 8 + (gap * 9) + "px";
@@ -43,7 +45,7 @@ function drawGreenSquares() {
 function clickedSquare(row, column) {
 
     //MIRA SI HAY UNA FICHA PUESTA
-    if (discs[row][column] != 0){
+    if (discs[row][column] != 0) {
         return;
     }
 
@@ -54,11 +56,24 @@ function clickedSquare(row, column) {
         if (turn == 1) turn = 2;
         else turn = 1;
         drawDiscs();
+        redrawScore();
+    }
+}
+function redrawScore() {
+    var ones=0;
+    var twos = 0;
+    for (var row = 0; row < 8; row++) {
+        for (var column = 0; column < 8; column++) {
+            var value = discs[row][column];
+            if(value==1)ones+=1;
+            else if(value==2) twos+=1; 
+        }
+        scoreLabel.innerHTML= "Black : " + ones + " White : " + twos;
     }
 }
 function canClickSpot(row, column) {
     var affectedDiscs = getAffectedDiscs(row, column);
-    if (affectedDiscs.length == 0)return false;
+    if (affectedDiscs.length == 0) return false;
     else return true;
 }
 function getAffectedDiscs(row, column) {
@@ -66,35 +81,35 @@ function getAffectedDiscs(row, column) {
     var affectedDiscs = [];
     var couldBeAffected = [];
     var columnIterator = column;
-    while(columnIterator<8){
-        columnIterator+=1;
+    while (columnIterator < 8) {
+        columnIterator += 1;
         var valueAtSpot = discs[row][columnIterator];
-        if (valueAtSpot == 0 || valueAtSpot == turn){
-            if (valueAtSpot==turn){
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
                 affectedDiscs = affectedDiscs.concat(couldBeAffected);
             }
-        break;
-        }else{
+            break;
+        } else {
             //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
-            var discLocation = {row:row,column:columnIterator};
+            var discLocation = { row: row, column: columnIterator };
             couldBeAffected.push(discLocation);
         }
     }
-    
+
     //COMPRUEBA HACIA LA IZQUIERDA
     var couldBeAffected = [];
     var columnIterator = column;
-    while(columnIterator>0){
-        columnIterator-=1;
+    while (columnIterator > 0) {
+        columnIterator -= 1;
         var valueAtSpot = discs[row][columnIterator];
-        if (valueAtSpot == 0 || valueAtSpot == turn){
-            if (valueAtSpot==turn){
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
                 affectedDiscs = affectedDiscs.concat(couldBeAffected);
             }
-        break;
-        }else{
+            break;
+        } else {
             //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
-            var discLocation = {row:row,column:columnIterator};
+            var discLocation = { row: row, column: columnIterator };
             couldBeAffected.push(discLocation);
         }
     }
@@ -102,17 +117,17 @@ function getAffectedDiscs(row, column) {
     //COMPRUEBA HACIA ABAJO
     var couldBeAffected = [];
     var rowIterator = row;
-    while(rowIterator>0){
-        rowIterator-=1;
+    while (rowIterator > 0) {
+        rowIterator -= 1;
         var valueAtSpot = discs[rowIterator][column];
-        if (valueAtSpot == 0 || valueAtSpot == turn){
-            if (valueAtSpot==turn){
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
                 affectedDiscs = affectedDiscs.concat(couldBeAffected);
             }
-        break;
-        }else{
+            break;
+        } else {
             //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
-            var discLocation = {row:rowIterator,column:column};
+            var discLocation = { row: rowIterator, column: column };
             couldBeAffected.push(discLocation);
         }
     }
@@ -120,17 +135,93 @@ function getAffectedDiscs(row, column) {
     //COMPRUEBA HACIA ARRIBA
     var couldBeAffected = [];
     var rowIterator = row;
-    while(rowIterator<7){
-        rowIterator+=1;
+    while (rowIterator < 7) {
+        rowIterator += 1;
         var valueAtSpot = discs[rowIterator][column];
-        if (valueAtSpot == 0 || valueAtSpot == turn){
-            if (valueAtSpot==turn){
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
                 affectedDiscs = affectedDiscs.concat(couldBeAffected);
             }
-        break;
-        }else{
+            break;
+        } else {
             //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
-            var discLocation = {row:rowIterator,column:column};
+            var discLocation = { row: rowIterator, column: column };
+            couldBeAffected.push(discLocation);
+        }
+    }
+    //COMPRUEBA HACIA DIAGONAL-ABAJO-DERECHA
+    var couldBeAffected = [];
+    var rowIterator = row;
+    var columnIterator = column;
+    while (rowIterator < 7 && columnIterator < 7) {
+        rowIterator += 1;
+        columnIterator += 1;
+        var valueAtSpot = discs[rowIterator][columnIterator];
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
+                affectedDiscs = affectedDiscs.concat(couldBeAffected);
+            }
+            break;
+        } else {
+            //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
+            var discLocation = { row: rowIterator, column: columnIterator };
+            couldBeAffected.push(discLocation);
+        }
+    }
+    //COMPRUEBA HACIA DIAGONAL-ABAJO-IZQUIERDA
+    var couldBeAffected = [];
+    var rowIterator = row;
+    var columnIterator = column;
+    while (rowIterator < 7 && columnIterator > 0) {
+        rowIterator += 1;
+        columnIterator -= 1;
+        var valueAtSpot = discs[rowIterator][columnIterator];
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
+                affectedDiscs = affectedDiscs.concat(couldBeAffected);
+            }
+            break;
+        } else {
+            //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
+            var discLocation = { row: rowIterator, column: columnIterator };
+            couldBeAffected.push(discLocation);
+        }
+    }
+    //COMPRUEBA HACIA DIAGONAL-ARRIBA-IZQUIERDA
+    var couldBeAffected = [];
+    var rowIterator = row;
+    var columnIterator = column;
+    while (rowIterator > 0 && columnIterator > 0) {
+        rowIterator -= 1;
+        columnIterator -= 1;
+        var valueAtSpot = discs[rowIterator][columnIterator];
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
+                affectedDiscs = affectedDiscs.concat(couldBeAffected);
+            }
+            break;
+        } else {
+            //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
+            var discLocation = { row: rowIterator, column: columnIterator };
+            couldBeAffected.push(discLocation);
+        }
+    }
+    //COMPRUEBA HACIA DIAGONAL-ARRIBA-DERECHA
+    var couldBeAffected = [];
+    var rowIterator = row;
+    var columnIterator = column;
+    while (rowIterator > 0 && columnIterator < 7) {
+        rowIterator -= 1;
+        columnIterator += 1;
+        var valueAtSpot = discs[rowIterator][columnIterator];
+        if (valueAtSpot == 0 || valueAtSpot == turn) {
+            if (valueAtSpot == turn) {
+                affectedDiscs = affectedDiscs.concat(couldBeAffected);
+            }
+            break;
+        } else {
+            //PILLA LA LOCALIZACION QUE ESTA EN EL WHILE
+            var discLocation = { row: rowIterator, column: columnIterator };
             couldBeAffected.push(discLocation);
         }
     }
@@ -138,12 +229,12 @@ function getAffectedDiscs(row, column) {
 
 }
 function flipDiscs(affectedDiscs) {
-    for (var i = 0; i < affectedDiscs.length; i++){
+    for (var i = 0; i < affectedDiscs.length; i++) {
         var spot = affectedDiscs[i];
-        if(discs[spot.row][spot.column]==1){
-            discs[spot.row][spot.column]==2;
-        }else{
-            discs[spot.row][spot.column]==1;
+        if (discs[spot.row][spot.column] == 1) {
+            discs[spot.row][spot.column] = 2;
+        } else {
+            discs[spot.row][spot.column] = 1;
         }
     }
 }
