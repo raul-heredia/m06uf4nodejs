@@ -7,24 +7,24 @@ function main() {
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 2, 0, 0, 0],
         [0, 0, 0, 2, 1, 0, 0, 0],
+        [0, 0, 0, 1, 2, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0]];
 
     function generaTaula() {
         taula.innerHTML = '';
-        for (let row = 0; row < discs.length; row++) {
+        for (var row = 0; row < discs.length; row++) {
             let fila = document.createElement('tr'); // creem un element TR
-            for (let column = 0; column < discs[row].length; column++) {
+            for (var column = 0; column < discs[row].length; column++) {
                 let casella = document.createElement('td');
                 let fitxa = document.createElement('div');
                 casella.classList = "fons";
-                if (discs[row][column] == 1) {
+                if (discs[row][column] == 2) {
                     fitxa.classList = "blanc";
                     casella.appendChild(fitxa);
-                } else if (discs[row][column] == 2) {
+                } else if (discs[row][column] == 1) {
                     fitxa.classList = "negre";
                     casella.appendChild(fitxa);
                 }
@@ -38,20 +38,19 @@ function main() {
     function casellaClicada(event) {
         row = parseInt(event.target.id[0]);
         column = parseInt(event.target.id[0]);
+        //MIRA SI HAY UNA FICHA PUESTA
+        if (discs[row][column] != 0) {
+            return;
+        }
+        if (canClickSpot(row, column) == true) {
+            console.log("true");
+            var affectedDiscs = getAffectedDiscs(row, column);
+            flipDiscs(affectedDiscs);
+            discs[row][column] = turn;
+            if (turn == 1) turn = 2;
+            else turn = 1;
+            generaTaula();
 
-        if (row && column) {
-            //MIRA SI HAY UNA FICHA PUESTA
-            if (discs[row][column] != 0) {
-                return;
-            }
-            if (canClickSpot(row, column) == true) {
-                var affectedDiscs = getAffectedDiscs(row, column);
-                flipDiscs(affectedDiscs);
-                discs[row][column] = turn;
-                if (turn == 1) turn = 2;
-                else turn = 1;
-                generaTaula();
-            }
         }
     }
 
