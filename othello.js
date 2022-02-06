@@ -5,6 +5,8 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert'); //utilitzem assercions
 const ObjectId = require('mongodb').ObjectID;
 
+var filterJugador1;
+var filterJugador2;
 
 function iniciar() {
     // ###################################################
@@ -211,7 +213,6 @@ function iniciar() {
             partida.torn = torn;
             partida.marcadorNegre = negres;
             partida.marcadorBlanc = blancs;
-            console.log(partida.marcadorNegre, partida.marcadorBlanc)
             let marcador = {
                 marcadorNegre: partida.marcadorNegre, marcadorBlanc: partida.marcadorBlanc, torn: partida.torn
             }
@@ -222,6 +223,13 @@ function iniciar() {
             response.writeHead(200, {
                 "Content-Type": "text/plain; charset=utf-8"
             });
+
+            let puntuacioPartidaJug1 = partida.marcadorNegre * 50;
+            let puntuacioPartidaJug2 = partida.marcadorBlanc * 50;
+
+
+
+
             partida = new Partida();
             tauler = [
                 [0, 0, 0, 0, 0, 0, 0, 0],
@@ -235,40 +243,6 @@ function iniciar() {
             ];
             response.write("ok");
             response.end();
-        }
-        // ###################################################
-        // #                                                 #
-        // #                                                 #
-        // #              /carregarTopJugadors               #    
-        // #                                                 #
-        // #                                                 #
-        // ###################################################
-        else if (pathname == '/acabarPartida') {
-            response.writeHead(200, {
-                "Content-Type": "application/json; charset=utf-8"
-            });
-            let resultatNegre = partida.marcadorNegre * 50;
-            let resultatBlanc = partida.marcadorBlanc * 50;
-            //db.othello.update({jugador: "Jugador 2"}, {$set: {"puntuacio": 0}});
-            var ruta = 'mongodb://localhost:27017';
-            MongoClient.connect(ruta, (err, client) => {
-                assert.equal(null, err);
-                console.log("Connexió correcta");
-                var db = client.db('othello');
-
-                response.writeHead(200, {
-                    "Content-Type": "application/json; charset=utf-8"
-                });
-                let cursor = db.collection('othello').find({});
-                cursor.toArray((function (err, results) {
-                    assert.equal(err, null);
-                    if (results != null) {
-                        sortida = JSON.stringify(results);
-                        response.write(sortida);
-                    }
-                    response.end();
-                }));
-            });
         }
         // ###################################################
         // #                                                 #
