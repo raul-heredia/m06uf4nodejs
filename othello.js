@@ -20,19 +20,22 @@ function iniciar() {
     class Partida {
         torn;
         tauler;
-
+        marcadorNegre;
+        marcadorBlanc;
         constructor() {
-            this.torn = 2;
-            this.tauler = [
+            this.torn = 1;
+            /* this.tauler = [
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 2, 1, 0, 0, 0],
-                [0, 0, 0, 2, 2, 0, 0, 0],
-                [0, 0, 0, 2, 0, 0, 0, 0],
+                [0, 0, 0, 1, 2, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
-            ];
+                [0, 0, 0, 0, 0, 0, 0, 0],
+            ]; */
+            this.marcadorNegre = 0;
+            this.marcadorBlanc = 0;
         }
 
         get torn() {
@@ -40,20 +43,32 @@ function iniciar() {
         }
 
         set torn(torn) {
-            console.log(`Torn abans ${this.torn}`)
-            if (this.torn == 1) this.torn = 2;
-            else this.torn = 1;
-            console.log(`Torn després ${this.torn}`)
+            this.torn = torn;
         }
-        get tauler() {
-            return this.tauler;
-        }
+        get marcadorNegre() {
 
-        set tauler(tauler) {
-            this.tauler = tauler;
+        }
+        set marcadorNegre(marcadorNegre) {
+            this.marcadorNegre = marcadorNegre;
+        }
+        get marcadorBlanc() {
+
+        }
+        set marcadorBlanc(marcadorBlanc) {
+            this.marcadorBlanc = marcadorBlanc;
         }
     }
     var partida = new Partida();
+    tauler = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 2, 1, 0, 0, 0],
+        [0, 0, 0, 1, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
 
     // ###################################################
     // #                                                 #
@@ -97,12 +112,12 @@ function iniciar() {
         // ###################################################
         else if (pathname == '/index.js') { // per a quan el html del joc demani el arxiu JS amb la lògica
             response.writeHead(200, {
-                "Content-Type": "text/html; charset=utf-8"
+                "Content-Type": "text/javascript; charset=utf-8"
             });
 
             fs.readFile('./frontend/index.js', function (err, sortida) { // Retornem el js
                 response.writeHead(200, {
-                    'Content-Type': 'text/html'
+                    'Content-Type': 'text/javascript'
                 });
                 response.write(sortida);
                 response.end();
@@ -137,12 +152,12 @@ function iniciar() {
         // ###################################################
         else if (pathname == '/login.js') { // Per a quan el login.html demani el js
             response.writeHead(200, {
-                "Content-Type": "text/html; charset=utf-8"
+                "Content-Type": "text/javascript; charset=utf-8"
             });
 
             fs.readFile('./login/login.js', function (err, sortida) {
                 response.writeHead(200, {
-                    'Content-Type': 'text/html'
+                    'Content-Type': 'text/javascript'
                 });
                 response.write(sortida);
                 response.end();
@@ -159,7 +174,7 @@ function iniciar() {
             response.writeHead(200, {
                 "Content-Type": "application/json; charset=utf-8"
             });
-            response.write(JSON.stringify(partida.tauler));
+            response.write(JSON.stringify(tauler));
             response.end();
         }
         // ###################################################
@@ -176,6 +191,84 @@ function iniciar() {
             let torn = (partida.torn).toString();
             response.write(torn);
             response.end();
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #               /actualitzarPartida               #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/actualitzarPartida') {
+            response.writeHead(200, {
+                "Content-Type": "application/json; charset=utf-8"
+            });
+            let cadena = reqUrl.searchParams.get('tauler');
+            let torn = reqUrl.searchParams.get('torn');
+            let negres = reqUrl.searchParams.get('negres');
+            let blancs = reqUrl.searchParams.get('blancs');
+            tauler = JSON.parse(cadena);
+            partida.torn = torn;
+            partida.marcadorNegre = negres;
+            partida.marcadorBlanc = blancs;
+            console.log(partida.marcadorNegre, partida.marcadorBlanc)
+            let marcador = {
+                marcadorNegre: partida.marcadorNegre, marcadorBlanc: partida.marcadorBlanc, torn: partida.torn
+            }
+            response.write(JSON.stringify(marcador));
+            response.end();
+        }
+        else if (pathname == '/logout') {
+            response.writeHead(200, {
+                "Content-Type": "text/plain; charset=utf-8"
+            });
+            partida = new Partida();
+            tauler = [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 2, 1, 0, 0, 0],
+                [0, 0, 0, 1, 2, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+            ];
+            response.write("ok");
+            response.end();
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #              /carregarTopJugadors               #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/acabarPartida') {
+            response.writeHead(200, {
+                "Content-Type": "application/json; charset=utf-8"
+            });
+            let resultatNegre = partida.marcadorNegre * 50;
+            let resultatBlanc = partida.marcadorBlanc * 50;
+            //db.othello.update({jugador: "Jugador 2"}, {$set: {"puntuacio": 0}});
+            var ruta = 'mongodb://localhost:27017';
+            MongoClient.connect(ruta, (err, client) => {
+                assert.equal(null, err);
+                console.log("Connexió correcta");
+                var db = client.db('othello');
+
+                response.writeHead(200, {
+                    "Content-Type": "application/json; charset=utf-8"
+                });
+                let cursor = db.collection('othello').find({});
+                cursor.toArray((function (err, results) {
+                    assert.equal(err, null);
+                    if (results != null) {
+                        sortida = JSON.stringify(results);
+                        response.write(sortida);
+                    }
+                    response.end();
+                }));
+            });
         }
         // ###################################################
         // #                                                 #

@@ -1,11 +1,25 @@
+window.onload = () => {
+    scoreLabel = document.getElementById("score");
+    torn = document.getElementById('torn');
+    blackBackground = document.getElementById("black");
+    disclayer = document.getElementById("disclayer");
+    finishBtn = document.getElementById("finishBtn");
+    logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener('click', logout);
+    blackBackground.style.width = cellWidth * 8 + (gap * 9) + "px";
+    blackBackground.style.height = cellWidth * 8 + (gap * 9) + "px";
+    drawGreenSquares();
+    drawDiscs();
+}
+
 var blackBackground;
 var gap = 3;
 var cellWidth = 80;
 var disclayer;
 var turn = 1;
 var score;
-var xhrDiscs = new XMLHttpRequest();
-var xhrTorn = new XMLHttpRequest();
+var ones, twos = 0;
+var marcador;
 var discs = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -18,38 +32,51 @@ var discs = [
 ]
 
 const recarregaTauler = setInterval(function () {
-    xhrDiscs.onreadystatechange = function () {
-        if (xhrDiscs.readyState == 4) {
-            discs = JSON.parse(xhrDiscs.responseText);
+    fetch('recarregarTauler')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Discs", data);
+            discs = data;
             drawDiscs();
-        }
-    };
-    xhrDiscs.open("GET", "recarregarTauler", true);
-    xhrDiscs.send(null);
-}, 5000);
+        })
+}, 3000);
 
 const recarregaTorn = setInterval(() => {
-    xhrTorn.onreadystatechange = () => {
-        if (xhrTorn.readyState == 4) {
-            turn = parseInt(xhrTorn.responseText);
-        }
-    };
-    xhrTorn.open("GET", "recarregarTorn", true);
-    xhrTorn.send(null);
-}, 5000);
+    fetch('recarregarTorn')
+        .then(response => response.json())
+        .then(data => {
+            console.log("turn", data);
+            turn = data;
+        })
+}, 3000);
 
-//clearInterval(recarregaTauler); // thanks @Luca D'Amico
+//clearInterval(recarregaTauler);
 
-
-window.onload = () => {
-    scoreLabel = document.getElementById("score");
-    blackBackground = document.getElementById("black");
-    disclayer = document.getElementById("disclayer");
-    blackBackground.style.width = cellWidth * 8 + (gap * 9) + "px";
-    blackBackground.style.height = cellWidth * 8 + (gap * 9) + "px";
-    drawGreenSquares();
-    drawDiscs();
+function actualitzarPartida() {
+    fetch(`actualitzarPartida?tauler=${JSON.stringify(discs)}&torn=${JSON.stringify(turn)}&negres=${ones}&blancs=${twos}`)
+        .then(response => response.json())
+        .then(marcador => {
+            console.log("Discs", marcador);
+            scoreLabel.innerHTML = `Jugador 1: ${marcador.marcadorNegre} || Jugador 2: ${marcador.marcadorBlanc}`;
+        })
 }
+
+function acabarPartida() {
+    fetch('acabarPartida')
+        .then(response => response.json())
+        .then(data => {
+            console.log("AcabarPartida", data);
+        })
+}
+
+function logout() {
+    fetch('logout').then(() => {
+        clearInterval(recarregaTauler);
+        clearInterval(recarregaTorn);
+        window.location.href = "http://localhost:8888/login";
+    });
+}
+
 function drawGreenSquares() {
     //DIBUJA LAS CUADRICULAS DEL TABLERO
     for (var row = 0; row < 8; row++) {
@@ -62,7 +89,6 @@ function drawGreenSquares() {
             GreenSquare.style.left = (cellWidth + gap) * column + gap + "px";
             GreenSquare.style.top = (cellWidth + gap) * row + gap + "px";
             GreenSquare.setAttribute("onclick", "clickedSquare(" + row + "," + column + ")");
-
             blackBackground.appendChild(GreenSquare);
         }
     }
@@ -78,20 +104,22 @@ function clickedSquare(row, column) {
         var affectedDiscs = getAffectedDiscs(row, column);
         flipDiscs(affectedDiscs);
         discs[row][column] = turn;
+        if (turn == 1) turn = 2;
+        else turn = 1;
         drawDiscs();
         redrawScore();
+        actualitzarPartida();
     }
 }
 function redrawScore() {
-    var ones = 0;
-    var twos = 0;
+    ones = 0;
+    twos = 0;
     for (var row = 0; row < 8; row++) {
         for (var column = 0; column < 8; column++) {
             var value = discs[row][column];
             if (value == 1) ones += 1;
             else if (value == 2) twos += 1;
         }
-        scoreLabel.innerHTML = "Black : " + ones + " White : " + twos;
     }
 }
 function canClickSpot(row, column) {
@@ -266,9 +294,8 @@ function drawDiscs() {
     for (var row = 0; row < 8; row++) {
         for (var column = 0; column < 8; column++) {
             var value = discs[row][column];
-            if (value == 0) {
-
-            } else {
+            //console.log("value:", value);
+            if (value != 0) {
                 var disc = document.createElement("div");
                 disc.style.position = "absolute";
                 disc.style.width = cellWidth - 4 + "px";
