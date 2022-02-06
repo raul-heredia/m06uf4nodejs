@@ -80,10 +80,9 @@ function iniciar() {
                 cursor.toArray((function (err, results) {
                     assert.equal(err, null);
                     if (results != null) {
-                        results.forEach((doc) => {
-                            sortida = JSON.stringify(doc);
-                            response.write(sortida);
-                        });
+                        console.log(results)
+                        sortida = JSON.stringify(results);
+                        response.write(sortida);
                     }
                     response.end();
                 }));

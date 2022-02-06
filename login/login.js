@@ -13,8 +13,9 @@ function main() {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            console.log("ok");
-            console.log(this.response);
+            let resposta = this.response;
+            console.log(resposta);
+            console.log(JSON.parse(resposta));
         }
     };
     xhr.open("GET", "carregarTopJugadors", true);
