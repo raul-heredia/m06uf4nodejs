@@ -34,9 +34,9 @@ var discs = [
 const recarregaTauler = setInterval(function () {
     fetch('recarregarTauler')
         .then(response => response.json())
-        .then(data => {
-            console.log("Discs", data);
-            discs = data;
+        .then(fitxes => {
+            console.table(fitxes);
+            discs = fitxes;
             drawDiscs();
         })
 }, 3000);
@@ -56,25 +56,18 @@ function actualitzarPartida() {
     fetch(`actualitzarPartida?tauler=${JSON.stringify(discs)}&torn=${JSON.stringify(turn)}&negres=${ones}&blancs=${twos}`)
         .then(response => response.json())
         .then(marcador => {
-            console.log("Discs", marcador);
             scoreLabel.innerHTML = `Jugador 1: ${marcador.marcadorNegre} || Jugador 2: ${marcador.marcadorBlanc}`;
         })
 }
 
-function acabarPartida() {
-    fetch('acabarPartida')
-        .then(response => response.json())
-        .then(data => {
-            console.log("AcabarPartida", data);
-        })
-}
-
 function logout() {
-    fetch('logout').then(() => {
-        clearInterval(recarregaTauler);
-        clearInterval(recarregaTorn);
-        window.location.href = "http://localhost:8888/login";
-    });
+    fetch('logout')
+        .then((resposta) => {
+            console.log(resposta)
+            clearInterval(recarregaTauler);
+            clearInterval(recarregaTorn);
+            window.location.href = "http://localhost:8888/login";
+        });
 }
 
 function drawGreenSquares() {

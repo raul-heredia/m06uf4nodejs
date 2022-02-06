@@ -214,11 +214,18 @@ function iniciar() {
             partida.marcadorNegre = negres;
             partida.marcadorBlanc = blancs;
             let marcador = {
-                marcadorNegre: partida.marcadorNegre, marcadorBlanc: partida.marcadorBlanc, torn: partida.torn
+                marcadorNegre: partida.marcadorNegre, marcadorBlanc: partida.marcadorBlanc
             }
             response.write(JSON.stringify(marcador));
             response.end();
         }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                     /logout                     #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
         else if (pathname == '/logout') {
             response.writeHead(200, {
                 "Content-Type": "text/plain; charset=utf-8"
@@ -227,8 +234,45 @@ function iniciar() {
             let puntuacioPartidaJug1 = partida.marcadorNegre * 50;
             let puntuacioPartidaJug2 = partida.marcadorBlanc * 50;
 
+            var ruta = 'mongodb://localhost:27017';
+            MongoClient.connect(ruta, (err, client) => {
+                assert.equal(null, err);
+                console.log("Connexió correcta");
+                var db = client.db('othello');
 
+                response.writeHead(200, {
+                    "Content-Type": "text/plain; charset=utf-8"
+                });
+                let cursor = db.collection('othello').find({});
+                cursor.toArray((function (err, results) {
+                    assert.equal(err, null);
+                    if (results != null) {
+                        results.forEach(player => {
+                            if (player.jugador == 'Jugador 1') {
+                                if (player.puntuacio < puntuacioPartidaJug1) {
+                                    let myquery = { jugador: 'Jugador 1' };
+                                    let newvalues = { $set: { puntuacio: `${puntuacioPartidaJug1}` } };
+                                    db.collection('othello').updateOne(myquery, newvalues, function (err, res) {
+                                        if (err) throw err;
+                                        console.log("Puntuació Jugador 1 actualitzada");
+                                    });
+                                }
+                            };
+                            if (player.jugador == 'Jugador 2') {
+                                if (player.puntuacio < puntuacioPartidaJug2) {
+                                    let myquery = { jugador: 'Jugador 2' };
+                                    let newvalues = { $set: { puntuacio: `${puntuacioPartidaJug2}` } };
+                                    db.collection('othello').updateOne(myquery, newvalues, function (err, res) {
+                                        if (err) throw err;
+                                        console.log("Puntuació Jugador 2 actualitzada");
+                                    });
+                                };
+                            }
+                        });
 
+                    };
+                }));
+            });
 
             partida = new Partida();
             tauler = [
@@ -241,7 +285,7 @@ function iniciar() {
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
             ];
-            response.write("ok");
+            response.write(`La partida ha acabat, el Jugador 1 ha obtingut ${puntuacioPartidaJug1} punts i el jugador 2 ha obtingut ${puntuacioPartidaJug2} punts`);
             response.end();
         }
         // ###################################################
