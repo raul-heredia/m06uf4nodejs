@@ -22,7 +22,6 @@ function main() {
     xhr.send(null);
 
     function generaTopRecords(topRecords) {
-        console.log(topRecords.jugador);
         topRecords.sort((a, b) => { return b.puntuacio - a.puntuacio }).forEach((user) => {
             let fila = taula.insertRow(-1); // amb insertRow(-1) afegim cada linia al final
             fila.insertCell(0).innerHTML = user.jugador; // A la cel·la 0 afegim el id
@@ -33,7 +32,15 @@ function main() {
     // Listeners
 
     loginBtn.addEventListener('click', () => {
-        if (selectPlayer.value !== 'noClicat') window.location.href = "http://localhost:8888/inici";
+        if (selectPlayer.value !== 'noClicat') {
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    console.log("ok");
+                }
+            };
+            xhr.open("GET", "inicialitzarPartida", true);
+            xhr.send(null);
+        }
     });
 }
 

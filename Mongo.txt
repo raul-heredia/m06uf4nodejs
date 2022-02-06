@@ -1,3 +1,6 @@
+Executar les següents ordres al mongo cli:
+
+use othello;
 db.othello.insert({"jugador": "Jugador 1", "puntuacio": 0});
 db.othello.insert({"jugador": "Jugador 2", "puntuacio": 0});
 db.othello.insert({"jugador": "Greg", "puntuacio": 2500});

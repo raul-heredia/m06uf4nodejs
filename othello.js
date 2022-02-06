@@ -7,6 +7,58 @@ const ObjectId = require('mongodb').ObjectID;
 
 
 function iniciar() {
+    // ###################################################
+    // #                                                 #
+    // #                                                 #
+    // #                    CLASSES                      #    
+    // #                                                 #
+    // #                                                 #
+    // ###################################################
+
+    // La idea es enviar el array des del front, fer un set tauler i després retornar el tauler amb un get a l'altre jugador
+    // Quan tiri el negre (Numero 1), el torn canvia al número 2.
+    class Partida {
+        torn;
+        tauler;
+
+        constructor() {
+            this.torn = 1;
+            this.tauler = [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 2, 1, 0, 0, 0],
+                [0, 0, 0, 1, 2, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+            ];
+        }
+
+        get torn() {
+            return this.torn;
+        }
+
+        set torn(torn) {
+            this.torn = torn;
+        }
+        get tauler() {
+            return this.tauler;
+        }
+
+        set tauler(tauler) {
+            this.tauler = tauler;
+        }
+    }
+
+
+    // ###################################################
+    // #                                                 #
+    // #                                                 #
+    // #                   onRequest                     #    
+    // #                                                 #
+    // #                                                 #
+    // ###################################################
     function onRequest(request, response) {
         let sortida;
         const baseURL = request.protocol + '://' + request.headers.host + '/';
@@ -14,7 +66,7 @@ function iniciar() {
         console.log("Petició per a  " + reqUrl.pathname + " rebuda.");
         const pathname = reqUrl.pathname;
 
-        if (pathname == '/inici') { // per a anar al joc
+        if (pathname == '/inici') { // Per a anar al joc
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
@@ -63,6 +115,11 @@ function iniciar() {
                 response.write(sortida);
                 response.end();
             });
+        } else if (pathname == '/inicialitzarPartida') { // Per a quan el login.html demani el js
+            response.writeHead(200, {
+                "Content-Type": "text/html; charset=utf-8"
+            });
+            let partida = new Partida();
         } else if (pathname == '/carregarTopJugadors') { // Per a quan el login.html demani el js
             var ruta = 'mongodb://localhost:27017';
             MongoClient.connect(ruta, (err, client) => {
@@ -71,7 +128,7 @@ function iniciar() {
                 var db = client.db('othello');
 
                 response.writeHead(200, {
-                    "Content-Type": "text/html; charset=utf-8"
+                    "Content-Type": "application/json; charset=utf-8"
                 });
                 console.log("consulta document a col·lecció othello");
 
