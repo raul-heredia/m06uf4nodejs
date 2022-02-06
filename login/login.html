@@ -10,28 +10,42 @@
     <script type="text/javascript" src="login.js" defer></script>
     <title>Login</title>
     <style>
-        .login {
+        main {
             width: 50%;
             margin: 0 auto;
+        }
+
+        table {
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="login">
-        <h1>Othello</h1>
-        <select id="selectJugador" class="form-select" aria-label="Default select example">
-            <option selected disabled value="noClicat">Seleccionar Jugador:</option>
-            <option value="jugador1">Jugador 1</option>
-            <option value="jugador2">Jugador 2</option>
-        </select>
-        <br />
-        <button id="loginBtn" class="btn btn-primary" type="button" id="button-addon2">Jugar
-        </button>
-    </div>
+    <main>
+        <div>
+            <h1>Othello</h1>
+            <select id="selectJugador" class="form-select" aria-label="Default select example">
+                <option selected disabled value="noClicat">Seleccionar Jugador:</option>
+                <option value="jugador1">Jugador 1</option>
+                <option value="jugador2">Jugador 2</option>
+            </select>
+            <br />
+            <button id="loginBtn" class="btn btn-primary" type="button" id="button-addon2">Jugar
+            </button>
+        </div>
 
-    <table id="taula">
-    </table>
+        <table class="table table-hover" id="taula">
+            <thead>
+                <tr>
+                    <th colspan="2">Rànking de jugadors</th>
+                </tr>
+                <tr>
+                    <th scope="col">Jugador</th>
+                    <th scope="col">Puntuació</th>
+                </tr>
+            </thead>
+    </main>
     <!-- Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

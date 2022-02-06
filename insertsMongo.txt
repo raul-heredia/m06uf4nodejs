@@ -1,0 +1,12 @@
+db.othello.insert({"jugador": "Jugador 1", "puntuacio": 0});
+db.othello.insert({"jugador": "Jugador 2", "puntuacio": 0});
+db.othello.insert({"jugador": "Greg", "puntuacio": 2500});
+db.othello.insert({"jugador": "Pablo", "puntuacio": 2250});
+db.othello.insert({"jugador": "Pedro", "puntuacio": 2000});
+db.othello.insert({"jugador": "Josep", "puntuacio": 1750});
+db.othello.insert({"jugador": "Karen", "puntuacio": 1500});
+db.othello.insert({"jugador": "Jennifer", "puntuacio": 1250});
+db.othello.insert({"jugador": "Thomas", "puntuacio": 1000});
+db.othello.insert({"jugador": "Arthur", "puntuacio": 750});
+db.othello.insert({"jugador": "Finn", "puntuacio": 500});
+db.othello.insert({"jugador": "Michael", "puntuacio": 250});

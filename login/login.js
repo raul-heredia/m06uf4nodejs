@@ -6,54 +6,29 @@ function main() {
 
     // Variables
     const loginBtn = document.getElementById('loginBtn');
-    const selectPlayer = document.getElementById('selectJugador')
+    const selectPlayer = document.getElementById('selectJugador');
+    const taula = document.getElementById('taula');
     let xhr = new XMLHttpRequest();
     // Funcions
 
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            let resposta = this.response;
-            console.log(resposta);
-            console.log(JSON.parse(resposta));
+            let topRecords = JSON.parse(this.response);
+            generaTopRecords(topRecords);
         }
     };
     xhr.open("GET", "carregarTopJugadors", true);
     xhr.send(null);
 
-
-    /* xhr.open('GET', 'carregarTopJugadors', true);
-    xhr.onload = () => {
-        if (this.status == 200) {
-            let jugadors = (this.response);
-            let informacioP = jugadors.split();
-            console.log(informacioP) */
-    /* let table = document.createElement("TABLE");
-    table.border = "1";
-    let columnCount = informacioP[0].length;
-
-    let row = table.insertRow(-1);
-    for (let i = 0; i < columnCount; i++) {
-        let headerCell = document.createElement("TH");
-        headerCell.innerHTML = informacioP[0][i];
-        row.appendChild(headerCell);
+    function generaTopRecords(topRecords) {
+        console.log(topRecords.jugador);
+        topRecords.sort((a, b) => { return b.puntuacio - a.puntuacio }).forEach((user) => {
+            let fila = taula.insertRow(-1); // amb insertRow(-1) afegim cada linia al final
+            fila.insertCell(0).innerHTML = user.jugador; // A la cel·la 0 afegim el id
+            fila.insertCell(1).innerHTML = user.puntuacio; // A la cel·la 1 afegim el nom
+        })
     }
-
-    for (let i = 1; i < informacioP.length; i++) {
-
-        row = table.insertRow(-1);
-        for (let j = 0; j < columnCount; j++) {
-            let cell = row.insertCell(-1);
-            cell.innerHTML = informacioP[i][j];
-        }
-    }
-
-    let dvTable = document.getElementById("dvTable");
-    dvTable.innerHTML = "";
-    dvTable.appendChild(table); */
-    /* }
-        };
-    xhr.send(); */
 
     // Listeners
 
