@@ -66,11 +66,17 @@ function iniciar() {
         console.log("Petició per a  " + reqUrl.pathname + " rebuda.");
         const pathname = reqUrl.pathname;
 
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                     /INICI                      #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
         if (pathname == '/inici') { // Per a anar al joc
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
-
             fs.readFile('./frontend/index.html', function (err, sortida) {
                 response.writeHead(200, {
                     'Content-Type': 'text/html'
@@ -79,7 +85,15 @@ function iniciar() {
                 response.end();
             });
 
-        } else if (pathname == '/index.js') { // per a quan el html del joc demani el arxiu JS amb la lògica
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                   /index.js                     #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/index.js') { // per a quan el html del joc demani el arxiu JS amb la lògica
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
@@ -91,7 +105,15 @@ function iniciar() {
                 response.write(sortida);
                 response.end();
             });
-        } else if (pathname == '/login') { // Per a quan el jugador demani el login
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                    /login                       #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/login') { // Per a quan el jugador demani el login
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
@@ -103,7 +125,15 @@ function iniciar() {
                 response.write(sortida);
                 response.end();
             });
-        } else if (pathname == '/login.js') { // Per a quan el login.html demani el js
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                   /login.js                     #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/login.js') { // Per a quan el login.html demani el js
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
@@ -115,12 +145,29 @@ function iniciar() {
                 response.write(sortida);
                 response.end();
             });
-        } else if (pathname == '/inicialitzarPartida') { // Per a quan el login.html demani el js
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #              /inicialitzarPartida               #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/inicialitzarPartida') { // Per a quan el login.html demani el js
             response.writeHead(200, {
                 "Content-Type": "text/html; charset=utf-8"
             });
             let partida = new Partida();
-        } else if (pathname == '/carregarTopJugadors') { // Per a quan el login.html demani el js
+
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #              /carregarTopJugadors               #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/carregarTopJugadors') { // Per a quan el login.html demani el js
             var ruta = 'mongodb://localhost:27017';
             MongoClient.connect(ruta, (err, client) => {
                 assert.equal(null, err);
@@ -144,7 +191,15 @@ function iniciar() {
                     response.end();
                 }));
             });
-        } else {
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                   ERROR 404                     #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else {
             response.writeHead(404, {
                 "Content-Type": "text/html; charset=utf-8"
             });
