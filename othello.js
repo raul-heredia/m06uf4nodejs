@@ -22,14 +22,14 @@ function iniciar() {
         tauler;
 
         constructor() {
-            this.torn = 1;
+            this.torn = 2;
             this.tauler = [
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 2, 1, 0, 0, 0],
-                [0, 0, 0, 1, 2, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 2, 2, 0, 0, 0],
+                [0, 0, 0, 2, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
             ];
@@ -40,7 +40,10 @@ function iniciar() {
         }
 
         set torn(torn) {
-            this.torn = torn;
+            console.log(`Torn abans ${this.torn}`)
+            if (this.torn == 1) this.torn = 2;
+            else this.torn = 1;
+            console.log(`Torn després ${this.torn}`)
         }
         get tauler() {
             return this.tauler;
@@ -50,7 +53,7 @@ function iniciar() {
             this.tauler = tauler;
         }
     }
-
+    var partida = new Partida();
 
     // ###################################################
     // #                                                 #
@@ -84,7 +87,6 @@ function iniciar() {
                 response.write(sortida);
                 response.end();
             });
-
         }
         // ###################################################
         // #                                                 #
@@ -149,16 +151,31 @@ function iniciar() {
         // ###################################################
         // #                                                 #
         // #                                                 #
-        // #              /inicialitzarPartida               #    
+        // #                /recarregarTauler                #    
         // #                                                 #
         // #                                                 #
         // ###################################################
-        else if (pathname == '/inicialitzarPartida') { // Per a quan el login.html demani el js
+        else if (pathname == '/recarregarTauler') {
             response.writeHead(200, {
-                "Content-Type": "text/html; charset=utf-8"
+                "Content-Type": "application/json; charset=utf-8"
             });
-            let partida = new Partida();
-
+            response.write(JSON.stringify(partida.tauler));
+            response.end();
+        }
+        // ###################################################
+        // #                                                 #
+        // #                                                 #
+        // #                /recarregarTorn                  #    
+        // #                                                 #
+        // #                                                 #
+        // ###################################################
+        else if (pathname == '/recarregarTorn') {
+            response.writeHead(200, {
+                "Content-Type": "application/json; charset=utf-8"
+            });
+            let torn = (partida.torn).toString();
+            response.write(torn);
+            response.end();
         }
         // ###################################################
         // #                                                 #
@@ -177,14 +194,10 @@ function iniciar() {
                 response.writeHead(200, {
                     "Content-Type": "application/json; charset=utf-8"
                 });
-                console.log("consulta document a col·lecció othello");
-
                 let cursor = db.collection('othello').find({});
-
                 cursor.toArray((function (err, results) {
                     assert.equal(err, null);
                     if (results != null) {
-                        console.log(results)
                         sortida = JSON.stringify(results);
                         response.write(sortida);
                     }
@@ -207,8 +220,6 @@ function iniciar() {
             response.write(sortida);
             response.end();
         }
-
-
     }
     http.createServer(onRequest).listen(8888);
     console.log("Servidor iniciat.");

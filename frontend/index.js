@@ -4,7 +4,8 @@ var cellWidth = 80;
 var disclayer;
 var turn = 1;
 var score;
-
+var xhrDiscs = new XMLHttpRequest();
+var xhrTorn = new XMLHttpRequest();
 var discs = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,6 +16,30 @@ var discs = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
 ]
+
+const recarregaTauler = setInterval(function () {
+    xhrDiscs.onreadystatechange = function () {
+        if (xhrDiscs.readyState == 4) {
+            discs = JSON.parse(xhrDiscs.responseText);
+            drawDiscs();
+        }
+    };
+    xhrDiscs.open("GET", "recarregarTauler", true);
+    xhrDiscs.send(null);
+}, 5000);
+
+const recarregaTorn = setInterval(() => {
+    xhrTorn.onreadystatechange = () => {
+        if (xhrTorn.readyState == 4) {
+            turn = parseInt(xhrTorn.responseText);
+        }
+    };
+    xhrTorn.open("GET", "recarregarTorn", true);
+    xhrTorn.send(null);
+}, 5000);
+
+//clearInterval(recarregaTauler); // thanks @Luca D'Amico
+
 
 window.onload = () => {
     scoreLabel = document.getElementById("score");
@@ -53,22 +78,20 @@ function clickedSquare(row, column) {
         var affectedDiscs = getAffectedDiscs(row, column);
         flipDiscs(affectedDiscs);
         discs[row][column] = turn;
-        if (turn == 1) turn = 2;
-        else turn = 1;
         drawDiscs();
         redrawScore();
     }
 }
 function redrawScore() {
-    var ones=0;
+    var ones = 0;
     var twos = 0;
     for (var row = 0; row < 8; row++) {
         for (var column = 0; column < 8; column++) {
             var value = discs[row][column];
-            if(value==1)ones+=1;
-            else if(value==2) twos+=1; 
+            if (value == 1) ones += 1;
+            else if (value == 2) twos += 1;
         }
-        scoreLabel.innerHTML= "Black : " + ones + " White : " + twos;
+        scoreLabel.innerHTML = "Black : " + ones + " White : " + twos;
     }
 }
 function canClickSpot(row, column) {
