@@ -35,7 +35,7 @@ function main() {
         if (selectPlayer.value !== 'noClicat') {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
-                    window.location.href = "http://localhost:8888/inici"
+                    window.location.href = `http://${window.location.host}/inici`;
                 }
             };
             xhr.open("GET", "inicialitzarPartida", true);

@@ -66,7 +66,7 @@ function logout() {
             console.log(resposta)
             clearInterval(recarregaTauler);
             clearInterval(recarregaTorn);
-            window.location.href = "http://localhost:8888/login";
+            window.location.href = `http://${window.location.host}/login`;
         });
 }
 
